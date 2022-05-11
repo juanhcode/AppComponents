@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".MainActivity">
 
     <EditText
         android:id="@+id/TextEmail"
@@ -13,7 +13,7 @@
         android:layout_marginTop="208dp"
         android:ems="10"
         android:hint="Email"
-        android:inputType="textPersonName"
+        android:inputType="textEmailAddress"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.56"
