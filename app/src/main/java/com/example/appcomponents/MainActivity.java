@@ -2,11 +2,13 @@ package com.example.appcomponents;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,14 +24,14 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
     private String textoEmail = "";
     private String textoPass ="";
-    private String url ="https://run.mocky.io/v3/7dd9aaa6-ee63-443d-8c1f-a60945f17478";
+    private String url ="https://run.mocky.io/v3/9e16a21c-60f5-40ae-af28-de84bd220dbd";
     private RequestQueue rq;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Button btn = findViewById(R.id.buttonLogin);
         rq = Volley.newRequestQueue(this);
+        Button btn = findViewById(R.id.buttonLogin);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,26 +43,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    public int econtrar(JSONArray respuesta){
+
+        int id = 0;
+
+        for (int i=0;i<respuesta.length();i++){
+            try{
+                JSONObject obj = new JSONObject(respuesta.get(i).toString());
+                System.out.println("este es el obj: " + obj);
+                if(textoEmail.equals(obj.getString("email")) && textoPass.equals(obj.getString("password"))){
+                    id = Integer.parseInt(obj.getString("id"));
+                    System.out.println("parseint" + id);
+                    return id;
+                }
+                else {
+                    id = -1;
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+        return id;
+    }
+
     //Consumir Api y validar
     public void auth(EditText email, EditText pass){
         JsonArrayRequest requerimiento = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                for (int i=0;i<response.length();i++){
-                    try{
-                        JSONObject obj = new JSONObject(response.get(i).toString());
-                        if(textoEmail.equals(obj.getString("email")) && textoPass.equals(obj.getString("password"))){
-                            System.out.println("SI EXISTE EL USUARIO");
-                            String correo = obj.getString("email");
-                            String email = obj.getString("password");
-                            System.out.println(correo + email);
-                        }else{
-                            email.setText("");
-                            pass.setText("");
-                        }
-                    }catch (JSONException e){
-                        e.printStackTrace();
-                    }
+                try {
+                    System.out.println("este es el response: " + response.getJSONObject(econtrar(response)-1));
+                    LoginClick();
+
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "Datos Erroneos", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -71,4 +88,10 @@ public class MainActivity extends AppCompatActivity {
         });
         rq.add(requerimiento);
     }
+
+    public void LoginClick(){
+        Intent miIntent = new Intent(MainActivity.this,Home.class);
+        startActivity(miIntent);
+    }
+
 }
