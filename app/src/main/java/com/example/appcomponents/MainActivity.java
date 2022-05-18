@@ -3,9 +3,12 @@ package com.example.appcomponents;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,10 +25,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.appcomponents.databinding.ActivityLoginBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
     private String textoEmail = "";
@@ -34,14 +40,32 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue rq;
     boolean isWifiConn = false;
     boolean isMobileConn = false;
+    ActivityLoginBinding binding;
+    public static final String BroadcastStringForAction = "checkinternet";
+    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(BroadcastStringForAction);
+        Intent serviceIntent = new Intent(this,Servicios.class);
+        startService(serviceIntent);
+
+        binding.notConnected.setVisibility(View.GONE);
+        if (isOnline(getApplicationContext())){
+            Set_Visibility_ON();
+        }else {
+            Set_Visibility_OFF();
+        }
+
+        //setContentView(R.layout.activity_login);
         rq = Volley.newRequestQueue(this);
         Button btn = findViewById(R.id.buttonLogin);
-        iniciarServicio();
+        //iniciarServicio();
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +92,68 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "I am Mobile", Toast.LENGTH_SHORT).show();
         }*/
     }
+
+    public BroadcastReceiver MyReceiever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(BroadcastStringForAction)){
+                if (intent.getStringExtra("online_status").equals("true"))
+                {
+                    Set_Visibility_ON();
+                }else{
+                    Set_Visibility_OFF();
+                }
+            }
+        }
+    };
+
+    public boolean isOnline(Context c){
+
+        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+
+        if (ni != null && ni.isConnectedOrConnecting()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+
+    // ========================== aqui se verifica la conexion a internet ==========================
+    public void Set_Visibility_ON(){
+        binding.notConnected.setVisibility(View.GONE);
+        binding.buttonLogin.setVisibility(View.VISIBLE);
+        binding.getRoot().setBackgroundColor(Color.WHITE);
+    }
+
+    public void Set_Visibility_OFF(){
+        binding.notConnected.setVisibility(View.VISIBLE);
+        binding.buttonLogin.setVisibility(View.GONE);
+        binding.getRoot().setBackgroundColor(Color.RED);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        registerReceiver(MyReceiever,mIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(MyReceiever);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(MyReceiever,mIntentFilter);
+    }
+
+    // ========================== fin de verificacion a internet ==========================
+
+
 
     public void iniciarServicio(){
         Intent service = new Intent(this, Servicios.class);

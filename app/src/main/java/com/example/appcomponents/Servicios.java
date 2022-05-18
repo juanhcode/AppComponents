@@ -18,22 +18,47 @@ public class Servicios extends Service {
 
     public void onCreate(){
         super.onCreate();
-        checkConnetion();
+        //checkConnetion();
         Log.d("inside", "oncreate");
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        throw  new UnsupportedOperationException("Not yet implement");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        checkConnetion();
+        //checkConnetion();
+        handler.post(periodicUpdate);
         return START_STICKY;
     }
 
+    public boolean isOnline(Context c){
+
+        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+
+        if (ni != null && ni.isConnectedOrConnecting()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    Handler handler = new Handler();
+    private Runnable periodicUpdate = new Runnable() {
+        @Override
+        public void run() {
+            handler.postDelayed(periodicUpdate,1*1000-SystemClock.elapsedRealtime()%1000);
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(MainActivity.BroadcastStringForAction);
+            broadcastIntent.putExtra("online_status",""+isOnline(Servicios.this));
+            sendBroadcast(broadcastIntent);
+        }
+    };
+/*
     public void checkConnetion()  {
         for (int i = 0; i < 10; i++){
             System.out.println("Hola soy un for" + i);
@@ -45,15 +70,16 @@ public class Servicios extends Service {
                     Toast.makeText(this, "Con conexion", Toast.LENGTH_SHORT).show();
                     Intent miIntent2 = new Intent(Servicios.this,Home.class);
                     startActivity(miIntent2);
-                }else {
-                    Intent miIntent3 = new Intent(Servicios.this,SinConexion.class);
-                    startActivity(miIntent3);
-                    Toast.makeText(this, "Sin Conexion", Toast.LENGTH_SHORT).show();
+                }
+                else if (nwInfo.getType() != ConnectivityManager.TYPE_WIFI){
+                    Toast.makeText(this, "Sin conexion", Toast.LENGTH_SHORT).show();
                 }
             }
             catch(Exception e){
                 Log.e("Exception Connectivity", e.getMessage());
+                System.out.println("Soy el cath");
             }
+
         }
 
         /*
