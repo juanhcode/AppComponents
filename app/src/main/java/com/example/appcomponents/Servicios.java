@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -27,9 +28,35 @@ public class Servicios extends Service {
         return null;
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        checkConnetion();
+        return START_STICKY;
+    }
 
     public void checkConnetion()  {
-        // Opcion 3  por medio de Runnable
+        for (int i = 0; i < 10; i++){
+            System.out.println("Hola soy un for" + i);
+        }
+            try{
+                ConnectivityManager conexionManager= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo nwInfo = conexionManager.getNetworkInfo(conexionManager.getActiveNetwork());
+                if (nwInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                    Toast.makeText(this, "Con conexion", Toast.LENGTH_SHORT).show();
+                    Intent miIntent2 = new Intent(Servicios.this,Home.class);
+                    startActivity(miIntent2);
+                }else {
+                    Intent miIntent3 = new Intent(Servicios.this,SinConexion.class);
+                    startActivity(miIntent3);
+                    Toast.makeText(this, "Sin Conexion", Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch(Exception e){
+                Log.e("Exception Connectivity", e.getMessage());
+            }
+        }
+
+        /*
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -61,5 +88,5 @@ public class Servicios extends Service {
             }
         }).start();
 
-    }
+    }*/
 }

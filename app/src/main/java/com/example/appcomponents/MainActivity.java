@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         rq = Volley.newRequestQueue(this);
         Button btn = findViewById(R.id.buttonLogin);
+        iniciarServicio();
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,8 +52,11 @@ public class MainActivity extends AppCompatActivity {
                 auth(email,pass);
             }
         });
-        iniciarServicio();
 
+
+        //startService(new Intent(MainActivity.this, Servicios.class));
+
+        /*
         // Connectivy manager
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo nwInfo = cm.getNetworkInfo(cm.getActiveNetwork());
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         }else if (nwInfo.getType() == ConnectivityManager.TYPE_MOBILE){
             isMobileConn = true;
             Toast.makeText(this, "I am Mobile", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     public void iniciarServicio(){
@@ -95,27 +99,19 @@ public class MainActivity extends AppCompatActivity {
 
     //Consumir Api y validar
     public void auth(EditText email, EditText pass){
+        Servicios servicio = new Servicios();
         JsonArrayRequest requerimiento = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                     try {
-                        if (isWifiConn == true || isMobileConn == true) {
-                            Toast.makeText(MainActivity.this, "Con conexion", Toast.LENGTH_SHORT).show();
                             System.out.println("Entre en el if");
                             System.out.println("este es el response: " + response.getJSONObject(econtrar(response) - 1));
                             loginClick();
-                        }
-                        else{
-                            Intent miIntent2 = new Intent(MainActivity.this,SinConexion.class);
-                            startActivity(miIntent2);
 
-                        }
                     }catch (JSONException e){
                         e.printStackTrace();
                         Toast.makeText(MainActivity.this, "Datos Erroneos", Toast.LENGTH_SHORT).show();
-
                     }
-
 
             }
         }, new Response.ErrorListener() {
@@ -132,41 +128,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(miIntent);
     }
 
-    private boolean isConnected(MainActivity mainActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        if((wifiConn != null &&  wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())){
-            return true;
-        }else{
-            return false;
-        }
-
-    }
-
-    private void showCustomDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Por favor, accede a internet para conectarte")
-                .setCancelable(false)
-                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(getApplicationContext(),Home.class));
-                        finish();
-                    }
-                });
-    }
-
-    public void offLine(){
-        Intent miIntent = new Intent(MainActivity.this,MainActivity.class);
-        startActivity(miIntent);
-    }
 
 }
