@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
     public void Set_Visibility_OFF(){
         binding.notConnected.setVisibility(View.VISIBLE);
         binding.buttonLogin.setVisibility(View.GONE);
+        binding.signInButton.setVisibility(View.GONE);
         binding.getRoot().setBackgroundColor(Color.RED);
     }
 
