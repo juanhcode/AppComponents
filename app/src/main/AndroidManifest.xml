@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppComponents">
         <activity
+            android:name=".lista"
+            android:exported="false" />
+        <activity
             android:name=".SinConexion"
             android:exported="false" />
         <activity

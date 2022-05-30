@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loginClick(){
-        Intent miIntent = new Intent(MainActivity.this,Home.class);
+        Intent miIntent = new Intent(MainActivity.this,lista.class);
         startActivity(miIntent);
     }
 

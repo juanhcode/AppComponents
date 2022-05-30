@@ -1,5 +1,6 @@
 package com.example.appcomponents;
 
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,9 +8,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class ListaDesplegable extends AppCompatActivity {
+public class lista extends AppCompatActivity {
 
     private EditText et1, et2;
     private CheckBox check1, check2;
@@ -18,13 +17,12 @@ public class ListaDesplegable extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-
-        //et1 = (EditText)findViewById(R.id.txt_valor1);
-        //et2 = (EditText)findViewById(R.id.txt_valor2);
-        //check1 = (CheckBox)findViewById(R.id.check_Suma);
-        //check2 = (CheckBox)findViewById(R.id.check_Resta);
-        //tv1 = (TextView)findViewById(R.id.tv_resultado);
+        setContentView(R.layout.activity_lista);
+        et1 = (EditText)findViewById(R.id.et1);
+        et2 = (EditText)findViewById(R.id.et2);
+        check1 = (CheckBox)findViewById(R.id.check1);
+        check2 = (CheckBox)findViewById(R.id.check2);
+        tv1 = (TextView)findViewById(R.id.tv1);
     }
 
     //Este método es la función del botón

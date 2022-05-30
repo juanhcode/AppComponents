@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.Task;
 
 import com.example.appcomponents.databinding.ActivityHomeBinding;
 
-public class Home extends s {
+public class Home extends AppCompatActivity {
 
     Button signOut;
 
