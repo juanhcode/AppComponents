@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
-            Intent miIntent = new Intent(MainActivity.this,Home.class);
+            Intent miIntent = new Intent(MainActivity.this,lista.class);
             startActivity(miIntent);
         } catch (ApiException e) {
             System.out.println("-----------------------------error-----------------------------------------");

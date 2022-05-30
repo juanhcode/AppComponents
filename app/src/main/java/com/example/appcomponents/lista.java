@@ -2,8 +2,10 @@ package com.example.appcomponents;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ public class lista extends AppCompatActivity {
     private EditText et1, et2;
     private CheckBox check1, check2;
     private TextView tv1;
+    private Button boton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,14 @@ public class lista extends AppCompatActivity {
         check1 = (CheckBox)findViewById(R.id.check1);
         check2 = (CheckBox)findViewById(R.id.check2);
         tv1 = (TextView)findViewById(R.id.tv1);
+        boton = (Button)findViewById(R.id.button3);
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent miIntent = new Intent(lista.this,Home.class);
+                startActivity(miIntent);
+            }
+        });
     }
 
     //Este método es la función del botón
